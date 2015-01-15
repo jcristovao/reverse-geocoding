@@ -1,7 +1,7 @@
 name:                reverse-geocoding
 version:             0.1.0.0
 synopsis:            Simple reverse geocoding using OpenStreeMap
--- description:         
+description:         Simple reverse geocoding using OpenStreeMap
 homepage:            https://github.com/jcristovao/reverse-geocoding
 license:             BSD3
 license-file:        LICENSE
