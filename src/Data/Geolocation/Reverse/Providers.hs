@@ -9,16 +9,18 @@ module Data.Geolocation.Reverse.Providers
   ( ReverseGeoJsonKey
   , ReverseGeoParser
   , ReverseGeoProvider
-
   , openStreetMap -- ^ Only one supported right now
 
   ) where
 
 import Control.Applicative
 
+import Data.Char
 import Data.Monoid
+import Data.Maybe
 import Data.Aeson
 import Data.Aeson.Types
+import Control.Monad (join)
 import qualified Data.Text as T
 
 import Data.Geolocation.Reverse.Types
@@ -43,9 +45,22 @@ openStreetMapUrl (Latitude mlat) (Longitude mlon) = do
          <> "&lon=" <> show lon
 
 
+getPostCodeText :: Suburb -> Maybe Suburb
+getPostCodeText (Suburb txt) = let
+  rest = T.dropWhile (\c -> isDigit c || isSpace c || (c == '-')) txt
+  in if T.null rest then Nothing else Just (Suburb rest)
+
+(<||>) :: Parser (Maybe a) -> Parser (Maybe a) -> Parser (Maybe a)
+pa <||> pb = do
+  a <- pa
+  if isJust a then pa else pb
+
+-- Not all records have suburb defined, but some have it written in the post code
+-- This function tries to extract if from the post code if available.
+openStreetMapParser :: Object -> Parser ParsedLocationInfo
 openStreetMapParser o =
   ParsedLocationInfo <$> o .:  "country_code"
                      <*> o .:  "city"
-                     <*> o .:? "suburb"
+                     <*> ((o .:? "suburb") <||> fmap (join . fmap getPostCodeText) ( o .:? "postcode"))
                      <*> ((o .:? "road") <|> (o .:? "street"))
                      <*> o .:? "postcode"
