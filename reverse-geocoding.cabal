@@ -1,5 +1,5 @@
 name:                reverse-geocoding
-version:             0.1.1.0
+version:             0.1.1.1
 synopsis:            Simple reverse geocoding using OpenStreeMap
 description:         Simple reverse geocoding using OpenStreeMap
 homepage:            https://github.com/jcristovao/reverse-geocoding

@@ -9,7 +9,7 @@ module Data.Geolocation.Reverse.Providers
   ( ReverseGeoJsonKey
   , ReverseGeoParser
   , ReverseGeoProvider
-  , openStreetMap -- ^ Only one supported right now
+  , openStreetMap
 
   ) where
 
