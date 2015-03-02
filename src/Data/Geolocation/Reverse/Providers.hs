@@ -60,7 +60,7 @@ pa <||> pb = do
 openStreetMapParser :: Object -> Parser ParsedLocationInfo
 openStreetMapParser o =
   ParsedLocationInfo <$> o .:  "country_code"
-                     <*> o .:  "city"
+                     <*> (o .:  "city" <|> o .: "village")
                      <*> ((o .:? "suburb") <||> fmap (join . fmap getPostCodeText) ( o .:? "postcode"))
-                     <*> ((o .:? "road") <|> (o .:? "street"))
+                     <*> ((o .:? "road") <||> (o .:? "street"))
                      <*> o .:? "postcode"
