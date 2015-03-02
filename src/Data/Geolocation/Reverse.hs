@@ -8,11 +8,13 @@
 -- We use this for a very coarse geographic categorization, so
 -- the following equivalences hold:
 --
--- City  : city   <|> village <|> town     <|> hamlet <|> county
--- Suburb: suburb <|> hamlet  <|> postcode <|> town
--- Street: road   <|> street
+-- City  : city   \<|> village \<|> town     \<|> hamlet \<|> county
 --
--- Feel free to contribute!
+-- Suburb: suburb \<|> hamlet  \<|> postcode \<|> town
+--
+-- Street: road   \<|> street
+--
+-- All contribuitions are welcomed!
 module Data.Geolocation.Reverse where
 
 import Control.Lens
