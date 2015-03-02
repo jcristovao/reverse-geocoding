@@ -19,10 +19,10 @@ newtype Longitude = Longitude (Maybe Double)
   deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
 
 -- | /Output types/
-newtype City    = City      T.Text deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
-newtype Suburb  = Suburb    T.Text deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
-newtype Street  = Street    T.Text deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
-newtype Postcode= Postcode  T.Text deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
+newtype City    = City     { getCity     :: T.Text } deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
+newtype Suburb  = Suburb   { getSuburb   :: T.Text } deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
+newtype Street  = Street   { getStreet   :: T.Text } deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
+newtype Postcode= Postcode { getPostcode :: T.Text } deriving (Eq,Ord,Show,Read,FromJSON,ToJSON)
 
 -- Booo: orphan instances
 instance ToJSON CountryCode

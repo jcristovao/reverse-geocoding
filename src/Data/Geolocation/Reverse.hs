@@ -2,8 +2,15 @@
 -- | This very simple module returns a Maybe Location info for a set
 -- of coordinates.
 --
--- Right now only one provider is given (OpenStreeMap), and the Suburb/Street
--- parsing could be improved, but this is enough for our needs.
+-- Right now only one provider is given (OpenStreeMap), please feel
+-- free to add more.
+--
+-- We use this for a very coarse geographic categorization, so
+-- the following equivalences hold:
+--
+-- City  : city   <|> village <|> town     <|> hamlet <|> county
+-- Suburb: suburb <|> hamlet  <|> postcode <|> town
+-- Street: road   <|> street
 --
 -- Feel free to contribute!
 module Data.Geolocation.Reverse where

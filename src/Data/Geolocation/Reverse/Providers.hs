@@ -50,17 +50,30 @@ getPostCodeText (Suburb txt) = let
   rest = T.dropWhile (\c -> isDigit c || isSpace c || (c == '-')) txt
   in if T.null rest then Nothing else Just (Suburb rest)
 
-(<||>) :: Parser (Maybe a) -> Parser (Maybe a) -> Parser (Maybe a)
-pa <||> pb = do
+(<|?>) :: Parser (Maybe a) -> Parser (Maybe a) -> Parser (Maybe a)
+pa <|?> pb = do
   a <- pa
   if isJust a then pa else pb
+infixl 3 <|?>
+
 
 -- Not all records have suburb defined, but some have it written in the post code
 -- This function tries to extract if from the post code if available.
 openStreetMapParser :: Object -> Parser ParsedLocationInfo
 openStreetMapParser o =
   ParsedLocationInfo <$> o .:  "country_code"
-                     <*> (o .:  "city" <|> o .: "village")
-                     <*> ((o .:? "suburb") <||> fmap (join . fmap getPostCodeText) ( o .:? "postcode"))
-                     <*> ((o .:? "road") <||> (o .:? "street"))
+                     <*> (    o .: "city"
+                          <|> o .: "village"
+                          <|> o .: "town"
+                          <|> o .: "hamlet"
+                          <|> o .: "county"
+                          )
+                     <*> (     (o .:? "suburb")
+                          <|?> (o .:? "hamlet")
+                          <|?> (fmap (join . fmap getPostCodeText) ( o .:? "postcode"))
+                          <|?> (o .:? "town")
+                          )
+                     <*> (     (o .:? "road")
+                          <|?> (o .:? "street")
+                         )
                      <*> o .:? "postcode"
