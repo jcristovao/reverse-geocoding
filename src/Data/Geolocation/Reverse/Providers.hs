@@ -22,6 +22,7 @@ import Data.Aeson
 import Data.Aeson.Types
 import Control.Monad (join)
 import qualified Data.Text as T
+import Text.Printf
 
 import Data.Geolocation.Reverse.Types
 
@@ -41,8 +42,8 @@ openStreetMapUrl (Latitude mlat) (Longitude mlon) = do
   return $  "http://nominatim.openstreetmap.org/reverse"
          <> "?format=json"
          <> "&zoom=18"
-         <> "&lat=" <> show lat
-         <> "&lon=" <> show lon
+         <> "&lat=" <> formatFixed lat
+         <> "&lon=" <> formatFixed lon
 
 
 getPostCodeText :: Suburb -> Maybe Suburb
@@ -77,3 +78,5 @@ openStreetMapParser o =
                           <|?> (o .:? "street")
                          )
                      <*> o .:? "postcode"
+
+formatFixed n = printf "%.6f" n
