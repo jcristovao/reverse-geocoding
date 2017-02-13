@@ -16,11 +16,13 @@ module Data.Geolocation.Reverse.Providers
 import Control.Applicative
 
 import Data.Char
+import Control.Lens ((.~),(&))
 import Data.Monoid
 import Data.Maybe
 import Data.Aeson
-import Data.Aeson.Types
+import Data.Aeson.Types hiding (Options)
 import Control.Monad (join)
+import Network.Wreq (Options, defaults, header)
 import qualified Data.Text as T
 
 import Data.Geolocation.Reverse.Types
@@ -28,11 +30,24 @@ import Data.Geolocation.Reverse.Types
 type ReverseGeoJsonKey = T.Text
 type ReverseGeoUrl = Latitude -> Longitude -> Maybe String
 type ReverseGeoParser  = Object -> Parser ParsedLocationInfo
-type ReverseGeoProvider = (ReverseGeoJsonKey, ReverseGeoUrl, ReverseGeoParser)
-
+type ReverseGeoProvider =
+  ( ReverseGeoJsonKey
+  , ReverseGeoUrl
+  , ReverseGeoParser
+  , Maybe Options
+  )
 
 openStreetMap :: ReverseGeoProvider
-openStreetMap = ("address", openStreetMapUrl, openStreetMapParser)
+openStreetMap =
+  ( "address"
+  , openStreetMapUrl
+  , openStreetMapParser
+  , Just
+    ( defaults
+    & header "User-Agent"
+      .~ ["Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"]
+    )
+  )
 
 openStreetMapUrl :: Latitude -> Longitude -> Maybe String
 openStreetMapUrl (Latitude mlat) (Longitude mlon) = do

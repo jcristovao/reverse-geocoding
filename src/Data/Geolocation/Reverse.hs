@@ -18,7 +18,7 @@
 module Data.Geolocation.Reverse where
 
 import Control.Lens
-import Network.Wreq
+import Network.Wreq (getWith, responseBody)
 import Data.Aeson
 import Data.Aeson.Types
 import Data.Aeson.Lens (key)
@@ -36,11 +36,11 @@ getLocationInfo
   -> Longitude
   -> ReverseGeoProvider
   -> IO (Maybe ParsedLocationInfo)
-getLocationInfo lat lon (jsonkey,url,parser) =
+getLocationInfo lat lon (jsonkey,url,parser,Just options) =
   case url lat lon  of
     Nothing -> return Nothing
     Just ga -> do
-      r   <- get ga
+      r   <- getWith options ga
       --    addr :: Maybe Value
       let addr = r ^? responseBody . key jsonkey
       case addr of
